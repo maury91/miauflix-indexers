@@ -1,0 +1,51 @@
+---
+id: therarbg-imdb
+name: TheRARBG (IMDb)
+description: "TheRARBG's per-title page as JSON: the newest releases of one IMDb title"
+language: en-US
+type: public
+encoding: UTF-8
+requestDelay: 4
+links:
+  - https://therarbg.to/
+  - https://therarbg.com/
+
+caps:
+  categorymappings:
+    - {id: Movies, cat: Movies, desc: "Movies"}
+    - {id: TV, cat: TV, desc: "TV"}
+
+  modes:
+    movie-search: [imdbid]
+    tv-search: [imdbid]
+
+search:
+  paths:
+    - path: "imdb-detail/{{ .Query.IMDBID }}/"
+      response:
+        type: json
+
+  inputs:
+    format: json
+
+  rows:
+    selector: trb_posts
+
+  fields:
+    category:
+      selector: category_str
+    title:
+      selector: name
+    infohash:
+      selector: info_hash
+    size:
+      selector: size
+    seeders:
+      selector: seeders
+    leechers:
+      selector: leechers
+    date:
+      selector: timestamp
+    imdbid:
+      selector: imdb
+# json

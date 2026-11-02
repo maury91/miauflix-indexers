@@ -1,0 +1,62 @@
+---
+id: eztv-api
+name: EZTV (API)
+description: "EZTV's JSON API: TV episodes by IMDb id"
+language: en-US
+type: public
+encoding: UTF-8
+requestDelay: 2
+links:
+  - https://eztvx.to/
+legacylinks:
+  - https://eztv.wf/
+  - https://eztv.tf/
+  - https://eztv.yt/
+
+caps:
+  categorymappings:
+    - {id: TV, cat: TV, desc: "TV"}
+
+  modes:
+    # The API lists episodes of one show by IMDb id; it has no text search.
+    tv-search: [imdbid, season, ep]
+
+search:
+  paths:
+    - path: api/get-torrents
+      response:
+        type: json
+
+  inputs:
+    imdb_id: "{{ .Query.IMDBIDShort }}"
+    limit: 100
+    page: "{{ .Query.Page }}"
+
+  rows:
+    selector: torrents
+
+  fields:
+    category:
+      text: TV
+    title:
+      selector: title
+    infohash:
+      selector: hash
+    magnet:
+      selector: magnet_url
+    download:
+      selector: torrent_url
+    size:
+      selector: size_bytes
+    seeders:
+      selector: seeds
+    leechers:
+      selector: peers
+    date:
+      selector: date_released_unix
+    imdbid:
+      selector: imdb_id
+      filters:
+        - name: prepend
+          args: "tt"
+# json
