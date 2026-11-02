@@ -20,6 +20,7 @@ them contains any content.
 | Definition | What it adds |
 | --- | --- |
 | `eztv-api.yml` | TV episodes by IMDb id through EZTV's JSON API (`/api/get-torrents`), 100 per page. EZTV's definition in Prowlarr and Jackett only searches by title. |
+| `therarbg.yml` | TheRARBG search by title, season packs included (100 results per request, most seeded first). |
 | `therarbg-imdb.yml` | The newest releases of one IMDb title through TheRARBG's per-title page. Prowlarr no longer ships TheRARBG, and the IMDb search in Jackett's definition no longer works. |
 
 Use another folder, or any other repository, by adding its URL to `CARDIGANN_DEFINITION_SOURCES`

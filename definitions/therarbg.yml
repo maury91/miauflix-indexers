@@ -1,0 +1,69 @@
+---
+id: therarbg
+name: TheRARBG
+description: "TheRARBG search by title, season packs included"
+language: en-US
+type: public
+encoding: UTF-8
+requestDelay: 4
+links:
+  - https://therarbg.to/
+  - https://therarbg.com/
+
+caps:
+  categorymappings:
+    - {id: Movies, cat: Movies, desc: "Movies"}
+    - {id: TV, cat: TV, desc: "TV"}
+
+  modes:
+    search: [q]
+    movie-search: [q]
+    tv-search: [q, season, ep]
+
+settings:
+  - name: sort
+    type: select
+    label: Sort requested from site
+    default: -se
+    options:
+      -a: created desc
+      a: created asc
+      -se: seeders desc
+      se: seeders asc
+      -s: size desc
+      s: size asc
+
+search:
+  paths:
+    - path: "get-posts/order:{{ .Config.sort }}{{ range .Categories }}:category:{{ . }}{{ end }}:keywords:{{ .Keywords }}:paginate_by:100:format:json/"
+      response:
+        type: json
+
+  keywordsfilters:
+    - name: re_replace
+      args: ["\\W+", " "]
+    - name: trim
+
+  rows:
+    selector: results
+    filters:
+      - name: andmatch
+
+  fields:
+    category:
+      selector: c
+    title:
+      selector: n
+    infohash:
+      selector: h
+    size:
+      selector: s
+    seeders:
+      selector: se
+    leechers:
+      selector: le
+    date:
+      selector: a
+    imdbid:
+      selector: i
+# json
