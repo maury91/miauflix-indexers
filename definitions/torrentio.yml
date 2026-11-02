@@ -1,0 +1,65 @@
+---
+id: torrentio
+name: Torrentio
+description: "Torrentio's public addon API: releases of one IMDb title or episode, gathered from many sites"
+language: en-US
+type: public
+encoding: UTF-8
+requestDelay: 2
+links:
+  - https://torrentio.strem.fun/
+
+caps:
+  categorymappings:
+    - {id: Movies, cat: Movies, desc: "Movies"}
+    - {id: TV, cat: TV, desc: "TV"}
+
+  modes:
+    # The addon answers for one title (or one episode of a show) by IMDb id; it has no text search.
+    movie-search: [imdbid]
+    tv-search: [imdbid, season, ep]
+
+settings:
+  - name: options
+    type: text
+    label: Torrentio options (providers, sorting, filters)
+    default: "sort=qualitysize|qualityfilter=scr,cam"
+
+search:
+  paths:
+    - path: "{{ .Config.options }}/stream/movie/{{ .Query.IMDBID }}.json"
+      response:
+        type: json
+      categories: [Movies]
+    - path: "{{ .Config.options }}/stream/series/{{ .Query.IMDBID }}:{{ if .Query.Season }}{{ .Query.Season }}{{ else }}1{{ end }}:{{ if .Query.Ep }}{{ .Query.Ep }}{{ else }}1{{ end }}.json"
+      response:
+        type: json
+      categories: [TV]
+
+  rows:
+    selector: streams
+    missingAttributeEqualsNoResults: true
+
+  fields:
+    category:
+      text: "{{ if .Query.Season }}TV{{ else }}Movies{{ end }}"
+    title:
+      selector: title
+      filters:
+        - name: split
+          args: ["\n", 0]
+    infohash:
+      selector: infoHash
+    seeders:
+      selector: title
+      filters:
+        - name: regexp
+          args: "👤 (\\d+)"
+    size:
+      selector: title
+      filters:
+        - name: regexp
+          args: "💾 (\\d+(?:\\.\\d+)? [KMGT]B)"
+    imdbid:
+      text: "{{ .Query.IMDBID }}"
+# json
