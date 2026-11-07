@@ -22,6 +22,7 @@ them contains any content.
 | `eztv-api.yml` | TV episodes by IMDb id through EZTV's JSON API (`/api/get-torrents`), 100 per page. EZTV's definition in Prowlarr and Jackett only searches by title. |
 | `therarbg.yml` | TheRARBG search by title, season packs included (100 results per request, most seeded first). |
 | `torrentio.yml` | One title or episode by IMDb id through Torrentio's public addon API: one request returns movies, episodes and season packs from many sites. (The Torrentio definitions in [dreulavelle/Prowlarr-Indexers](https://github.com/dreulavelle/Prowlarr-Indexers/tree/main/Custom) expect a debrid account.) |
+| `animetosho.yml` | Anime from AnimeTosho's JSON feed (`feed.animetosho.net`), which collects Nyaa, TokyoTosho and others: one AniDB episode, one AniDB anime (packs included), or a text search. SeaDex's recommended releases are marked. Anime only. |
 | `therarbg-imdb.yml` | The newest releases of one IMDb title through TheRARBG's per-title page. Prowlarr no longer ships TheRARBG, and the IMDb search in Jackett's definition no longer works. |
 
 Use another folder, or any other repository, by adding its URL to `CARDIGANN_DEFINITION_SOURCES`
@@ -35,6 +36,12 @@ A definition is one `.yml` file in `definitions/`, named after its `id`. It shou
 - be `type: public`, so no account or login is needed;
 - declare only the search parameters the site really supports in `caps.modes`;
 - search by IMDb id (`imdbid`) where the site allows it.
+
+Miauflix also reads two extensions of the format, used by `animetosho.yml`:
+
+- an `anime-search` mode in `caps.modes`, which may list `anidbeid`, `anidbaid` and `anilistid`
+  (read in templates as `.Query.AniDBEID`, `.Query.AniDBAID` and `.Query.AniListID`);
+- a `release` field set to `best` or `alt`, for a curated pick such as SeaDex's.
 
 Miauflix supports the subset of the format that its engine implements; a definition that uses
 anything else is listed as unsupported rather than failing.

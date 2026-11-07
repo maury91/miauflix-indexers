@@ -1,0 +1,64 @@
+---
+id: animetosho
+name: AnimeTosho
+description: "AnimeTosho's JSON feed: anime releases from Nyaa, TokyoTosho and others, matched to AniDB episodes, with SeaDex picks marked"
+language: en-US
+type: public
+encoding: UTF-8
+# The feed answers one request at a time per client.
+requestDelay: 2
+links:
+  - https://feed.animetosho.net/
+
+caps:
+  categorymappings:
+    - {id: Anime, cat: TV/Anime, desc: "Anime"}
+
+  modes:
+    search: [q]
+    # Miauflix extension: AniDB episode (eid) and anime (aid) ids. An episode id finds that
+    # episode's releases; an anime id also finds packs of the whole series.
+    anime-search: [q, anidbeid, anidbaid]
+
+search:
+  paths:
+    - path: "json?{{ if .Query.AniDBEID }}eid={{ .Query.AniDBEID }}{{ else if .Query.AniDBAID }}aid={{ .Query.AniDBAID }}{{ else }}q={{ .Keywords }}{{ end }}"
+      response:
+        type: json
+
+  rows:
+    selector: $
+
+  fields:
+    category:
+      text: Anime
+    title:
+      selector: title
+    infohash:
+      selector: info_hash
+    magnet:
+      selector: magnet_uri
+      optional: true
+    download:
+      selector: torrent_url
+      optional: true
+    details:
+      selector: link
+      optional: true
+    size:
+      selector: total_size
+    seeders:
+      selector: seeders
+      optional: true
+    leechers:
+      selector: leechers
+      optional: true
+    date:
+      selector: timestamp
+    seadex:
+      selector: is_seadex
+      optional: true
+    # Miauflix extension: SeaDex's chosen release for the series.
+    release:
+      text: "{{ if eq .Result.seadex \"true\" }}best{{ end }}"
+# json
